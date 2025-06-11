@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ahmed Elmorshidy | Data Analyst Portfolio</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <style>
+        :root {
+            --primary-color: #0c101a;
+            --secondary-color: #171f2e;
+            --accent-color: #0ea5e9;
+            --light-accent-color: #67e8f9;
+            --text-color: #d1d5db;
+            --nav-width-collapsed: 90px;
+            --nav-width-expanded: 220px;
+        }
+
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            cursor: default; 
+            padding-left: var(--nav-width-collapsed);
+            transition: padding-left 0.4s ease-in-out;
+        }
+        
+        body.nav-expanded { padding-left: var(--nav-width-expanded); }
+        .cursor-glow {
+            position: fixed; top: 0; left: 0; pointer-events: none;
+            border-radius: 50%; transform: translate(-50%, -50%);
+            width: 400px; height: 400px;
+            background: rgba(14, 165, 233, 0.1);
+            filter: blur(100px); z-index: -1;
+        }
+
+        /* Sidebar Navigation */
+        #side-nav {
+            position: fixed; left: 0; top: 0; height: 100vh;
+            width: var(--nav-width-collapsed);
+            background-color: var(--secondary-color);
+            border-right: 1px solid #2a364e;
+            display: flex; flex-direction: column;
+            padding: 1rem 0; z-index: 1000;
+            transition: width 0.4s ease-in-out;
+            overflow: hidden;
+        }
+        #side-nav.expanded { width: var(--nav-width-expanded); }
+        .nav-header { display: flex; align-items: center; justify-content: center; padding: 0 1rem; min-height: 40px; margin-bottom: 2rem; }
+        .nav-header .logo-text { color: white; font-weight: bold; font-size: 1.1rem; opacity: 0; transition: opacity 0.3s ease-in-out; }
+        #side-nav.expanded .nav-header .logo-text { opacity: 1; }
+        #side-nav.expanded .nav-header .logo-icon { display: none; }
+        #side-nav .nav-list { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; width: 100%; }
+        #side-nav .nav-link { display: flex; align-items: center; color: var(--text-color); text-decoration: none; position: relative; padding: 0.8rem 0; width: var(--nav-width-expanded); }
+        #side-nav .nav-link i { font-size: 1.7rem; min-width: var(--nav-width-collapsed); text-align: center; transition: color 0.3s ease; }
+        #side-nav .nav-link .link-text { margin-left: 0.5rem; white-space: nowrap; opacity: 0; transition: opacity 0.2s ease-in-out; }
+        #side-nav.expanded .nav-link .link-text { opacity: 1; transition-delay: 0.1s; }
+        #side-nav .nav-link:hover i, #side-nav .nav-link.active i,
+        #side-nav .nav-link:hover .link-text, #side-nav .nav-link.active .link-text { color: var(--accent-color); }
+
+        /* General Styles & Animations */
+        .text-gradient {
+            background: linear-gradient(90deg, var(--light-accent-color), #fff, var(--accent-color));
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% 100%; animation: gradient-flow 5s ease-in-out infinite;
+        }
+        @keyframes gradient-flow { 0%{background-position:200% center} 50%{background-position:0% center} 100%{background-position:200% center} }
+        .typing::after { content: '|'; animation: blink 0.7s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+        .btn-primary {
+            background-color: var(--accent-color); color: white; padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem; font-weight: 600; transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3); display: inline-block;
+        }
+        .btn-primary:hover { transform: translateY(-4px) scale(1.05); box-shadow: 0 8px 25px rgba(14, 165, 233, 0.5); }
+        .social-icon a {
+            display: inline-flex; justify-content: center; align-items: center;
+            width: 40px; height: 40px; border: 2px solid var(--accent-color);
+            border-radius: 50%; color: var(--accent-color); font-size: 20px; transition: 0.4s ease;
+        }
+        .social-icon a:hover {
+            background-color: var(--accent-color); color: white;
+            box-shadow: 0 0 25px var(--accent-color); transform: translateY(-5px);
+        }
+        .interactive-card {
+            background-color: var(--secondary-color);
+            border-radius: 0.75rem;
+            transition: box-shadow 0.3s, transform 0.3s ease;
+        }
+        .interactive-card:hover { transform: translateY(-8px); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2); }
+        .expandable-card { cursor: pointer; position: relative; }
+        .expandable-details {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.5s ease-in-out;
+        }
+        .expandable-details > div { overflow: hidden; }
+        .expandable-details.open { grid-template-rows: 1fr; }
+        .details-content { padding: 1rem 1.5rem 1.5rem 1.5rem; }
+        .expand-icon {
+            position: absolute; top: 50%; right: 1.5rem;
+            transform: translateY(-50%);
+            font-size: 1.5rem; color: var(--accent-color);
+            transition: transform 0.4s ease;
+        }
+        .expand-icon.open { transform: translateY(-50%) rotate(45deg); }
+        
+        .timeline { position: relative; padding: 1rem 0; }
+        .timeline-item { position: relative; padding: 1.5rem 2rem; margin-left: 2rem; border-left: 3px solid #2a364e; }
+        .timeline-item:hover { border-left-color: var(--accent-color); }
+        .timeline-item::before {
+            content: ''; position: absolute; left: -11px; top: 1.5rem;
+            width: 20px; height: 20px; border-radius: 50%;
+            background-color: var(--accent-color); border: 3px solid var(--secondary-color);
+            transition: transform 0.3s ease;
+        }
+        .timeline-item:hover::before { transform: scale(1.2); }
+        .timeline-date { color: var(--accent-color); font-weight: 600; margin-bottom: 0.25rem; }
+
+        .skill-group-card {
+            background-color: var(--secondary-color);
+            border-radius: 0.75rem; padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .skill-group-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        
+        .activity-item { position: relative; padding-left: 25px; }
+        .activity-item::before {
+            content: '•'; color: var(--accent-color);
+            font-size: 1.5rem; position: absolute; left: 0; top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* Simple Fade-in Animation on Scroll */
+        [data-anim] {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        [data-anim].is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        @keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+        .hero-content { max-width: 600px; }
+        .hero-img { max-width: 300px; }
+        .hero-btn { margin-top: 1.5rem; }
+        .hero-btn a { margin-right: 1rem; }
+        
+        @media (max-width: 768px) {
+            body { padding-left: 0; }
+            #side-nav { width: 100%; position: relative; }
+            #side-nav.expanded { width: 100%; }
+            #side-nav .nav-link { width: 100%; }
+            #side-nav .nav-header .logo-icon { display: inline-block; }
+            #side-nav.expanded .nav-header .logo-text { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="w-full">
+    <div class="cursor-glow"></div>
+
+    <nav id="side-nav">
+        <div class="nav-header">
+            <span class="logo-icon text-lg font-bold text-white">A</span>
+            <span class="logo-text">Ahmed Elmorshidy</span>
+        </div>
+        <ul class="nav-list">
+            <li><a href="#home" class="nav-link"><i class='bx bxs-home'></i><span class="link-text">Home</span></a></li>
+            <li><a href="#about" class="nav-link"><i class='bx bxs-user'></i><span class="link-text">About</span></a></li>
+            <li><a href="#journey" class="nav-link"><i class='bx bxs-graduation'></i><span class="link-text">Journey</span></a></li>
+            <li><a href="#skills" class="nav-link"><i class='bx bxs-star'></i><span class="link-text">Skills</span></a></li>
+            <li><a href="#portfolio" class="nav-link"><i class='bx bxs-briefcase'></i><span class="link-text">Portfolio</span></a></li>
+            <li><a href="#activities" class="nav-link"><i class='bx bx-sitemap'></i><span class="link-text">Activities</span></a></li>
+            <li><a href="#contact" class="nav-link"><i class='bx bxs-paper-plane'></i><span class="link-text">Contact</span></a></li>
+        </ul>
+        <div></div>
+    </nav>
+
+    <main class="w-full">
+        <section id="home" class="min-h-screen flex items-center justify-center">
+            <div class="container mx-auto px-6 lg:px-8 flex flex-col-reverse md:flex-row items-center justify-between text-center md:text-left">
+                <div class="md:w-3/5 mt-10 md:mt-0 hero-content" data-anim>
+                    <h3 class="text-2xl text-white">Hello, It's Me</h3>
+                    <h1 class="text-5xl md:text-6xl font-bold text-white my-3"><span class="text-gradient">Ahmed Elmorshidy</span></h1>
+                    <h2 class="text-3xl md:text-4xl font-semibold mt-2 text-white">and I'm a <span class="text-accent typing">Data Analyst</span></h2>
+                    <p class="mt-6 max-w-xl mx-auto md:mx-0">Aspiring data analyst and engineer with proficiency in SQL, Power BI, and Excel. Skilled in collecting, cleaning, and analyzing large datasets to uncover actionable insights.</p>
+                    <div class="social-icon flex justify-center md:justify-start flex-wrap gap-3 mt-8">
+                        <a href="https://linkedin.com/in/ahmed-elmorshidy-6551011bb" target="_blank" title="LinkedIn"><i class='bx bxl-linkedin'></i></a>
+                        <a href="https://github.com/Ahmed-elmorshidy" target="_blank" title="GitHub"><i class='bx bxl-github'></i></a>
+                        <a href="https://twitter.com/a7md_elmorshidy" target="_blank" title="Twitter"><i class='bx bxl-twitter'></i></a>
+                        <a href="https://www.facebook.com/ahmed.m.elmorshidy" target="_blank" title="Facebook"><i class='bx bxl-facebook'></i></a>
+                        <a href="https://instagram.com/elmorshidy" target="_blank" title="Instagram"><i class='bx bxl-instagram-alt'></i></a>
+                        <a href="https://medium.com/@ahmed.elmorshidy2002" target="_blank" title="Medium"><i class='bx bxl-medium'></i></a>
+                        <a href="https://www.hackerrank.com/profile/ahmed_elmorshid1" target="_blank" title="HackerRank"><i class='bx bx-code-alt'></i></a>
+                        <a href="https://discordapp.com/users/ahmed.morshidy#1070" target="_blank" title="Discord"><i class='bx bxl-discord-alt'></i></a>
+                    </div>
+                      <div class="mt-8 hero-btn"><a href="https://drive.google.com/drive/folders/12SBv3XMa2MCox-kC4_WqhjODabHb5wPB?usp=sharing" class="btn-primary mr-4">Download CV</a>
+                       <a href="#portfolio" class="btn-primary bg-transparent border border-accent hover:bg-accent">View Projects</a>
+                      </div>
+                </div>
+                <div class="md:w-2/5 flex justify-center hero-img floating animate-float" data-anim>
+                    <div class="relative w-160 h-160 md:w-240 md:h-240">
+                        <img src="https://i.ibb.co/3YySrxdG/download.png" alt="Ahmed Elmorshidy" 
+                             class="rounded-full object-cover w-full h-full border-4 border-accent shadow-2xl shadow-cyan-500/30">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="py-20 bg-secondary-color">
+            <div class="container mx-auto px-6 lg:px-8">
+                <div class="text-center mb-12" data-anim><h2 class="text-4xl font-bold text-white">About <span class="text-accent">Me</span></h2><p class="text-lg mt-2">My Introduction</p></div>
+                <div class="flex flex-col md:flex-row items-center gap-12">
+<div class="md:w-1/3 flex justify-center" data-anim>
+  <!-- الحاوية مع الحركة -->
+  <div class="relative w-64 h-64 md:w-96 md:h-96 animate-float">
+    <!-- الإطار الخارجي الدائري -->
+    <div class="absolute inset-0 rounded-full border-4 border-accent pointer-events-none"></div>
+    <!-- الصورة بدون قص، تكبر/تصغر للحاوية -->
+    <img
+      src="https://i.ibb.co/35dGbmQp/download-1.png"
+      alt="Ahmed Elmorshidy"
+      class="rounded-full object-contain w-full h-full"
+    />
+  </div>
+</div>
+                    <div class="md:w-2/3" data-anim>
+                        <p class="mb-4">A passionate data analyst dedicated to transforming raw data into meaningful stories. With a strong foundation in computer science from Mansoura University, I have honed my skills in data cleaning, transformation, and visualization.</p>
+                        <p class="mb-6">I am proficient in tools like SQL, Power BI, and Excel, leveraging them to design insightful dashboards and perform statistical analysis that supports data-driven decision-making. I thrive in collaborative environments and am always eager to learn new technologies.</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+                            <div class="bg-primary-color p-4 rounded-lg transition-transform hover:scale-105"><h3 class="text-2xl font-bold text-accent">0</h3><p class="text-sm">Years of relevant experience</p></div>
+                            <div class="bg-primary-color p-4 rounded-lg transition-transform hover:scale-105"><h3 class="text-2xl font-bold text-accent">03</h3><p class="text-sm">Completed Projects</p></div>
+                            <div class="bg-primary-color p-4 rounded-lg transition-transform hover:scale-105"><h3 class="text-2xl font-bold text-accent">10+</h3><p class="text-sm">Technical Certifications</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="journey" class="py-20">
+            <div class="container mx-auto px-6 lg:px-8">
+                <div class="text-center mb-16" data-anim><h2 class="text-4xl font-bold text-white">My <span class="text-accent">Journey</span></h2><p class="text-lg mt-2">Education, Experience, and Certificates</p></div>
+                <div class="timeline max-w-3xl mx-auto">
+                    <div class="timeline-item interactive-card" data-anim><p class="timeline-date">2020 - 2024</p><h3 class="text-xl font-bold text-white">Bachelor's in Computer Science</h3><p class="text-gray-400 font-medium">Mansoura University</p><p class="mt-2 text-sm"<li> Grade: Very Good.</li><li> Graduation Project: AI-powered influencer ads application (Grade: Excellent). </li></p></div>
+                    <div class="timeline-item interactive-card" data-anim><p class="timeline-date">Aug 2023 – Oct 2023</p><h3 class="text-xl font-bold text-white">Data Science (Python & ML) Training</h3><p class="text-gray-400 font-medium">CCIC, Mansoura University</p><p class="mt-2 text-sm">8-week course on Python, data analysis, visualization, and building ML/DL models. Final project involved predicting diabetes cases.</p></div>
+                    <div class="timeline-item interactive-card" data-anim><p class="timeline-date">July 2021</p><h3 class="text-xl font-bold text-white">Summer Training</h3><p class="text-gray-400 font-medium">Bank Masr</p><p class="mt-2 text-sm">4-week online training focused on teamwork, effective communication, and problem-solving.</p></div>
+                </div>
+
+                <div class="mt-20">
+                    <div class="text-center mb-12" data-anim><h3 class="text-3xl font-bold text-white">Certificates</h3></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="interactive-card" data-anim><div class="expandable-card p-6 text-center flex flex-col items-center"><i class='bx bxs-analyse text-4xl text-accent mb-3'></i><h4 class="font-semibold text-white">Data Analyst Associate</h4><p class="text-sm text-gray-400">DataCamp</p><span class="expand-icon bx bx-plus"></span></div><div class="expandable-details"><div><p class="px-6 details-content text-sm text-gray-400">Covers foundational data analysis skills, including data collection, cleaning, and visualization using various tools.</p></div></div></div>
+                        <div class="interactive-card" data-anim><div class="expandable-card p-6 text-center flex flex-col items-center"><i class='bx bxs-report text-4xl text-accent mb-3'></i><h4 class="font-semibold text-white">Data Analyst in Power BI</h4><p class="text-sm text-gray-400">DataCamp (17 Courses , 50 hours)</p><span class="expand-icon bx bx-plus"></span></div><div class="expandable-details"><div><p class="px-6 details-content text-sm text-gray-400">A 50-hour track focused on mastering Power BI for data analysis, covering Power Query, DAX, data modeling, and creating compelling visualizations.</p></div></div></div>
+                        <div class="interactive-card" data-anim><div class="expandable-card p-6 text-center flex flex-col items-center"><i class='bx bxs-file text-4xl text-accent mb-3'></i><h4 class="font-semibold text-white">Data Analysis in Excel</h4><p class="text-sm text-gray-400">DataCamp (8 Courses , 24 hours)</p><span class="expand-icon bx bx-plus"></span></div><div class="expandable-details"><div><p class="px-6 details-content text-sm text-gray-400">A 24-hour track covering advanced Excel functionalities, including Power Query, Power Pivot, pivot tables, and data modeling.</p></div></div></div>
+                        <div class="interactive-card" data-anim><div class="expandable-card p-6 text-center flex flex-col items-center"><i class='bx bxs-data text-4xl text-accent mb-3'></i><h4 class="font-semibold text-white">Associate Data Analyst in SQL</h4><p class="text-sm text-gray-400">DataCamp (11 Courses , 39 hours)</p><span class="expand-icon bx bx-plus"></span></div><div class="expandable-details"><div><p class="px-6 details-content text-sm text-gray-400">A 39-hour track for developing strong SQL skills, from basic queries to advanced functions and subqueries for complex data analysis.</p></div></div></div>
+                        <div class="interactive-card" data-anim><div class="expandable-card p-6 text-center flex flex-col items-center"><i class='bx bx-code-alt text-4xl text-accent mb-3'></i><h4 class="font-semibold text-white">SQL For Data Analysis</h4><p class="text-sm text-gray-400">Udacity</p><span class="expand-icon bx bx-plus"></span></div><div class="expandable-details"><div><p class="px-6 details-content text-sm text-gray-400">Focuses on using SQL to extract and analyze data from databases. Covers data cleaning, joining tables, and performing aggregations.</p></div></div></div>
+                        <div class="interactive-card" data-anim><div class="expandable-card p-6 text-center flex flex-col items-center"><i class='bx bxl-python text-4xl text-accent mb-3'></i><h4 class="font-semibold text-white">Data Science Training</h4><p class="text-sm text-gray-400">CCIC ( 8 weeks )</p><span class="expand-icon bx bx-plus"></span></div><div class="expandable-details"><div><p class="px-6 details-content text-sm text-gray-400">Comprehensive training covering the data science pipeline, from data collection and preprocessing to building and evaluating machine learning models.</p></div></div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="py-20 bg-secondary-color">
+             <div class="container mx-auto px-6 lg:px-8">
+                <div class="text-center mb-12" data-anim><h2 class="text-4xl font-bold text-white">Technical <span class="text-accent">Skills</span></h2></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="skill-group-card interactive-card" data-anim>
+                        <div class="flex items-center mb-4"><img src="data:image/jpeg;base64,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" alt="Power BI Logo" class="w-12 h-12 mr-4"><h3 class="text-2xl font-bold text-white">Power BI</h3></div>
+                        <ul class="list-disc list-inside text-gray-300 space-y-2 pl-4"><li>DAX</li><li>Power Query</li><li>Data Modeling & Relationships</li><li>Interactive Dashboarding & Visualization</li></ul>
+                    </div>
+                    <div class="skill-group-card interactive-card" data-anim>
+                        <div class="flex items-center mb-4"><img src="https://i.ibb.co/zhtT4QkY/Excel.png" alt="Excel Logo" class="w-12 h-12 mr-4"><h3 class="text-2xl font-bold text-white">Microsoft Excel</h3></div>
+                        <ul class="list-disc list-inside text-gray-300 space-y-2 pl-4"><li>Power Query</li><li>Power Pivot & Data Modeling</li><li>Pivot Tables & Charts</li><li>Advanced Formulas</li><li>Visualization</li></ul>
+                    </div>
+                    <div class="skill-group-card interactive-card" data-anim>
+                        <div class="flex items-center mb-4"><img src="https://i.ibb.co/zTKxWPR9/azure-sql-database6354.png" alt="SQL Logo" class="w-12 h-12 mr-4"><h3 class="text-2xl font-bold text-white">SQL</h3></div>
+                        <ul class="list-disc list-inside text-gray-300 space-y-2 pl-4"><li>MySQL , PostgreSQL</li><li>MS SQL Server</li><li>Complex Queries & Joins</li><li>Data Cleaning & Manipulation</li></ul>
+                    </div>
+                    <div class="skill-group-card interactive-card" data-anim>
+                        <div class="flex items-center mb-4"><img src="https://i.ibb.co/5WW93TPC/Python-svg.png" alt="Python-svg" alt="Python Logo" class="w-12 h-12 mr-4"><h3 class="text-2xl font-bold text-white">Python</h3></div>
+                        <ul class="list-disc list-inside text-gray-300 space-y-2 pl-4"><li>Still Learning Python for Data Analysis </li><li>Data analysis : with Pandas & NumPy</li><li>Data visualization : Matplotlib & Seaborn</li><li>Data Cleaning</li></ul>
+                    </div>
+                    <div class="skill-group-card interactive-card" data-anim>
+                        <div class="flex items-center mb-4"><img src="https://i.ibb.co/Q306hL79/Screenshot-2025-06-11-181950.png" alt="Data Skills" class="w-12 h-12 mr-4"><h3 class="text-2xl font-bold text-white">Data Skills</h3></div>
+                        <ul class="list-disc list-inside text-gray-300 space-y-2 pl-4"><li>Data Cleaning & Manipulation</li><li>EDA & Data Transformation</li><li>Visualization & Storytelling</li><li>Reporting</li><li>Dashboarding</li></ul>
+                    </div>
+                    <div class="skill-group-card interactive-card" data-anim>
+                        <div class="flex items-center mb-4"><img src="https://i.ibb.co/6JrZVgf6/Microsoft-Office-2016-Logo-wine.png" alt="SQL Logo" class="w-12 h-12 mr-4"><h3 class="text-2xl font-bold text-white">Microsoft Office</h3></div>
+                        <ul class="list-disc list-inside text-gray-300 space-y-2 pl-4"><li>Word</li><li>Power Point</li><li>Google Sheets</li></ul>
+                    </div>
+                    <div class="skill-group-card interactive-card" data-anim>
+                        <div class="flex items-center mb-4"><img src="https://i.ibb.co/S7nPTJKn/statistics-icon-with-colorful-flat-style-vector-46948895.png" alt=" Mathematics & Statistics" class="w-12 h-12 mr-4"><h3 class="text-2xl font-bold text-white">Mathematics & Statistics</h3></div>
+                        <ul class="list-disc list-inside text-gray-300 space-y-2 pl-4"><li>Probability</li><li>Linear Algebra</li><li>Calculus</li></ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="portfolio" class="py-20">
+            <div class="container mx-auto px-6 lg:px-8">
+                <div class="text-center mb-12" data-anim><h2 class="text-4xl font-bold text-white">My <span class="text-accent">Portfolio</span></h2><p class="text-lg mt-2">Most Recent Work</p></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+                    <div class="interactive-card" data-anim><img src="https://i.ibb.co/QjdbHbz0/Whats-App-Image-2025-04-28-at-15-27-54-39421958.jpg" alt="HR Analysis Project" class="w-full h-48 object-cover rounded-t-lg"><div class="p-6"><h3 class="text-xl font-bold text-white mb-2">HR Analysis (Attrition)</h3><p class="text-sm mb-4">Applied analysis on 1480 employee records and pivot-based dashboards to reveal causes of employee attrition. Used Excel Power Query, Power Pivot, and interactive charts.</p>
+                        Tools & Techniques using Excel:
+                        <li>Excel Power Query & Power Pivot: Data ingestion, cleaning, and model creation.</li>
+                        <li>Pivot Tables & Charts: Interactive exploration of key metrics.</li>
+                        <li>Data Visualization: Clear, dynamic dashboards built with Excel.</li>
+</li><a href="https://github.com/Ahmed-elmorshidy/HR-Analysis-Attrition-" target="_blank" class="font-semibold text-accent hover:underline">View Project <i class='bx bx-link-external'></i></a></div></div>
+                    <div class="interactive-card" data-anim><img src="https://i.ibb.co/mkrPFJq/Sales-and-Shipping-Analysis-Dashboard.png" alt="Sales Analysis Project" class="w-full h-48 object-cover rounded-t-lg"><div class="p-6"><h3 class="text-xl font-bold text-white mb-2">Sales and Shipping Analysis</h3><p class="text-sm mb-4">Analyzed 9,000+ order records via Power Query and created a data model to track KPIs, visualizing sales by category, region, and segment.</p>
+                        Tools & Techniques using Excel:
+                        <li>Power Query & Pivot: Data ingestion, transformation, and relational modeling</li>
+                        <li>Pivot Tables & Charts: Dynamic visualizations of sales by category, region, and segment</li>
+                        <li>Dashboard Design: Actionable insights for budget reallocation & high ROI targeting.</li>
+                        <a href="https://github.com/Ahmed-elmorshidy/Sales-and-Shipping-Analysis" target="_blank" class="font-semibold text-accent hover:underline">View Project <i class='bx bx-link-external'></i></a></div></div>
+                    <div class="interactive-card" data-anim><img src="https://placehold.co/800x600/171f2e/0ea5e9?text=AI+Chatbot" alt="AI Chatbot Project" class="w-full h-48 object-cover rounded-t-lg"><div class="p-6"><h3 class="text-xl font-bold text-white mb-2">Graduation Project (Chatbot)</h3><p class="text-sm mb-4">Adapted a pre-trained model on custom-built data (136+ questions) to accurately determine user intent and provide the required response.</p><a href="#" class="font-semibold text-accent hover:underline">View Project <i class='bx bx-link-external'></i></a></div></div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="activities" class="py-20 bg-secondary-color">
+            <div class="container mx-auto px-6 lg:px-8">
+                <div class="text-center mb-12" data-anim><h2 class="text-4xl font-bold text-white">Extracurricular <span class="text-accent">Activities</span></h2></div>
+                <div class="max-w-4xl mx-auto space-y-4">
+                     <div class="interactive-card" data-anim><div class="expandable-card p-6 activity-item"><h4 class="font-semibold text-white text-lg">Student Union, Mansoura University (Member of the Teams Committee)</h4><span class="expand-icon bx bx-plus"></span></div><div class="expandable-details"><div><p class="px-6 details-content text-sm text-gray-400">Developed my leadership, effective communication and problem-solving skills by interacting with students, facul-ty and College Administration. I have contributed to the organization of many events and projects that have strengthened the student spirit and solved many challenges.
+ ..... Participated in organizing the 6th information Technology Developers' Symposium (ITDS-6) at faculty of comput-ers and information.</p></div></div></div>
+                     <div class="interactive-card" data-anim><div class="expandable-card p-6 activity-item"><h4 class="font-semibold text-white text-lg">(PR Member) Student for Egypt MU</h4><span class="expand-icon bx bx-plus"></span></div><div class="expandable-details"><div><p class="px-6 details-content text-sm text-gray-400">Organized the First International Friendship Forum, hosting students from multiple nationalities. This broadened my cultural understanding and refined my interaction skills.</p></div></div></div>
+                     <div class="interactive-card" data-anim><div class="expandable-card p-6 activity-item"><h4 class="font-semibold text-white text-lg">Youth Entrepreneurship Council MU ( Many positions )</h4><span class="expand-icon bx bx-plus"></span></div><div class="expandable-details"><div><p class="px-6 details-content text-sm text-gray-400">Served as a Projects, Information Management, and Partnership Development member, contributing to various entrepreneurial initiatives.</p></div></div></div>
+                     <div class="interactive-card" data-anim><div class="expandable-card p-6 activity-item"><h4 class="font-semibold text-white text-lg">(HR Member) CIS Team MU</h4><span class="expand-icon bx bx-plus"></span></div><div class="expandable-details"><div><p class="px-6 details-content text-sm text-gray-400">Analyzed and monitored team performance regularly, addressing issues and driving performance enhancements through data analysis and reporting.</p></div></div></div>
+                     <div class="interactive-card" data-anim><div class="expandable-card p-6 activity-item"><h4 class="font-semibold text-white text-lg">(PR Member) MEGA Team MU</h4><span class="expand-icon bx bx-plus"></span></div><div class="expandable-details"><div><p class="px-6 details-content text-sm text-gray-400">Served as a PR Member, earning 'Best PR Member of November 21'. Organized multiple events, including the new students' welcome event.</p></div></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="py-20">
+            <div class="container mx-auto px-6 lg:px-8">
+                <div class="text-center mb-12" data-anim><h2 class="text-4xl font-bold text-white">Contact <span class="text-accent">Me</span></h2><p class="text-lg mt-2">Get in touch</p></div>
+                <div class="max-w-3xl mx-auto text-center">
+                    <div class="mb-8" data-anim>
+                        <h3 class="text-2xl font-semibold text-white mb-2">I'm available for freelance and full-time positions.</h3>
+                        <p class="text-gray-400">Have a project in mind? Let's talk.</p>
+                        <a href="mailto:ahmed.elmorshidy2002@gmail.com" class="text-accent font-bold text-xl mt-2 inline-block">ahmed.elmorshidy2002@gmail.com</a>
+                    </div>
+                    <div data-anim>
+                        <h4 class="font-semibold text-white mb-4 text-2xl">Find me on</h4>
+                        <div class="social-icon flex flex-wrap gap-4 justify-center"><a href="https://linkedin.com/in/ahmed-elmorshidy-6551011bb" target="_blank" title="LinkedIn"><i class='bx bxl-linkedin'></i></a><a href="https://github.com/Ahmed-elmorshidy" target="_blank" title="GitHub"><i class='bx bxl-github'></i></a><a href="https://twitter.com/a7md_elmorshidy" target="_blank" title="Twitter"><i class='bx bxl-twitter'></i></a><a href="https://www.facebook.com/ahmed.m.elmorshidy" target="_blank" title="Facebook"><i class='bx bxl-facebook'></i></a><a href="https://instagram.com/elmorshidy" target="_blank" title="Instagram"><i class='bx bxl-instagram-alt'></i></a><a href="https://medium.com/@ahmed.elmorshidy2002" target="_blank" title="Medium"><i class='bx bxl-medium'></i></a><a href="https://www.hackerrank.com/profile/ahmed_elmorshid1" target="_blank" title="HackerRank"><i class='bx bx-code-alt'></i></a><a href="https://discordapp.com/users/ahmed.morshidy#1070" target="_blank" title="Discord"><i class='bx bxl-discord-alt'></i></a></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-primary-color py-6 border-t border-t-secondary-color">
+        <div class="container mx-auto px-6 lg:px-8 text-center"><p class="text-sm text-gray-500">&copy; 2024 Ahmed Elmorshidy. All Rights Reserved.</p></div>
+    </footer>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/vanilla-tilt@1.8.1/dist/vanilla-tilt.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            gsap.registerPlugin(ScrollTrigger);
+            
+            const cursorGlow = document.querySelector('.cursor-glow');
+            document.addEventListener('mousemove', (e) => {
+                gsap.to(cursorGlow, { x: e.clientX, y: e.clientY, duration: 0.3, ease: 'power2.out' });
+            });
+
+            const sideNav = document.getElementById('side-nav');
+            const body = document.body;
+            sideNav.addEventListener('mouseenter', () => { sideNav.classList.add('expanded'); body.classList.add('nav-expanded'); });
+            sideNav.addEventListener('mouseleave', () => { sideNav.classList.remove('expanded'); body.classList.remove('nav-expanded'); });
+
+            const sections = document.querySelectorAll('section[id]');
+            sections.forEach(section => {
+                if(section.id) { 
+                    ScrollTrigger.create({
+                        trigger: section,
+                        start: 'top center',
+                        end: 'bottom center',
+                        onToggle: self => {
+                            const navLink = document.querySelector(`.nav-link[href="#${section.id}"]`);
+                            if (navLink) {
+                                if(self.isActive) {
+                                   document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+                                   navLink.classList.add('active');
+                                } else {
+                                   navLink.classList.remove('active');
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+
+            const typingElement = document.querySelector('.typing');
+            const roles = ['Data Analyst', 'Data Engineer', 'Dashboard Designer'];
+            let roleIndex = 0; let currentRole = ''; let isDeleting = false;
+            function type() {
+                const fullRole = roles[roleIndex];
+                currentRole = isDeleting ? fullRole.substring(0, currentRole.length - 1) : fullRole.substring(0, currentRole.length + 1);
+                typingElement.textContent = currentRole;
+                let typeSpeed = isDeleting ? 100 : 200;
+                if (!isDeleting && currentRole === fullRole) { typeSpeed = 2000; isDeleting = true; } 
+                else if (isDeleting && currentRole === '') { isDeleting = false; roleIndex = (roleIndex + 1) % roles.length; }
+                setTimeout(type, typeSpeed);
+            }
+            type();
+            
+            const animatedElements = document.querySelectorAll('[data-anim]');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    } else {
+                        entry.target.classList.remove('is-visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            animatedElements.forEach(el => { observer.observe(el); });
+
+
+            VanillaTilt.init(document.querySelectorAll(".interactive-card, .project-card, .skill-group-card"), { max: 8, speed: 400, glare: true, "max-glare": 0.1 });
+            
+            document.querySelectorAll('.expandable-card').forEach(card => {
+                const details = card.nextElementSibling;
+                const icon = card.querySelector('.expand-icon');
+
+                card.addEventListener('click', () => {
+                    const isOpen = details.classList.contains('open');
+                    
+                    document.querySelectorAll('.expandable-details.open').forEach(openDetail => {
+                        if (openDetail !== details) {
+                            openDetail.classList.remove('open');
+                            const otherIcon = openDetail.previousElementSibling.querySelector('.expand-icon');
+                            if(otherIcon) otherIcon.classList.remove('open');
+                        }
+                    });
+
+                    details.classList.toggle('open');
+                    if(icon) icon.classList.toggle('open');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
